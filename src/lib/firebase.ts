@@ -212,7 +212,7 @@ export async function fbLoadThemes(): Promise<MemoryTheme[]> {
 }
 
 // ─── Generic save/delete helpers ───
-export async function fbSaveDoc(col: string, id: string, data: Record<string, unknown>): Promise<void> {
+export async function fbSaveDoc(col: string, id: string, data: object): Promise<void> {
   if (!db) return;
   const uid = getUserId();
   if (!uid) return;

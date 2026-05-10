@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useAppStore } from '@/store/useAppStore';
 import { getSetting, setSetting } from '@/lib/db';
 import { initFirebase, isFirebaseReady } from '@/lib/firebase';
+import { loadAllCaches } from '@/lib/memory';
 import Welcome from '@/sections/Welcome';
 import ApiKeySetup from '@/sections/ApiKeySetup';
 import FirebaseSetup from '@/sections/FirebaseSetup';
@@ -41,6 +42,8 @@ function App() {
           if (ok && isFirebaseReady()) {
             setFbInitialized(true);
             setMode('advanced');
+            // Load data from Firestore
+            await loadAllCaches();
           }
         }
         if (savedKey) {
