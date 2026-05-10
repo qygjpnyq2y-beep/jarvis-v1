@@ -1,0 +1,237 @@
+{
+  "app": {
+    "name": "JARVIS",
+    "tagline": "あなたのパーソナルAIコンパニオン",
+    "online": "オンラインです",
+    "saySomething": "メッセージを入力するか、ファイルを添付してください。"
+  },
+  "onboarding": {
+    "welcome": "JARVISへようこそ",
+    "chooseMode": "開始方法を選択してください",
+    "starter": {
+      "title": "スターターモード",
+      "subtitle": "クイックスタート",
+      "desc": "OpenRouter APIキーだけが必要です。ローカルメモリ保存付きの基本チャット。",
+      "requirement": "必須: OpenRouter APIキー",
+      "features": ["基本チャット", "ローカルメモリ", "画像・ファイル添付", "クラウド設定不要"],
+      "cta": "APIキーで開始"
+    },
+    "advanced": {
+      "title": "アドバンスドモード",
+      "subtitle": "フル機能",
+      "desc": "Firebase + R2でクラウド同期、バックアップ、マルチデバイスをサポート。",
+      "requirement": "必須: Firebase設定 + OpenRouter APIキー",
+      "optional": "任意: メディアアップロード用Cloudflare R2",
+      "features": ["スターターの全機能", "クラウドバックアップ・同期", "マルチデバイスアクセス", "大容量メディアアップロード", "プッシュ通知"],
+      "cta": "フル設定"
+    },
+    "apiKey": {
+      "title": "OpenRouter APIキーを入力",
+      "placeholder": "sk-or-v1-...",
+      "activate": "有効化",
+      "hint": "openrouter.ai/keysで無料キーを取得",
+      "skip": "後で設定する",
+      "error": "有効なAPIキーを入力してください（10文字以上）。"
+    },
+    "firebase": {
+      "title": "Firebase接続",
+      "subtitle": "Firebase設定JSONを貼り付けてください",
+      "placeholder": "{\"apiKey\":\"...\",\"authDomain\":\"...\",...}",
+      "connect": "接続",
+      "skip": "スキップ — ローカルストレージのみ使用",
+      "hint": "Firebase Console > Project Settings > Your apps > Config",
+      "error": "無効なJSONまたは必須フィールドが不足。"
+    },
+    "r2": {
+      "title": "Cloudflare R2ストレージ",
+      "subtitle": "音楽・動画アップロード用",
+      "optional": "任意 — メディアストレージが不要な場合はスキップ。",
+      "placeholder": "https://your-r2-worker.workers.dev",
+      "connect": "接続",
+      "skip": "スキップ — メディアストレージ不要",
+      "hint": "R2 WorkerをCloudflareアカウントにデプロイ",
+      "error": "Worker URLに到達できません。"
+    },
+    "auth": {
+      "title": "ログイン",
+      "subtitle": "思い出を同期するにはログインしてください",
+      "email": "メール",
+      "password": "パスワード",
+      "signIn": "ログイン",
+      "signUp": "新規登録",
+      "noAccount": "アカウントをお持ちでないですか？",
+      "haveAccount": "アカウントをお持ちですか？",
+      "error": "認証に失敗しました。"
+    },
+    "securityNotice": {
+      "title": "セキュリティ通知",
+      "desc": "APIキーはデバイスにローカル保存されます。本番環境では、Firebase Functionsなどのプロキシサーバーを使用してください。",
+      "dismiss": "理解しました"
+    }
+  },
+  "chat": {
+    "placeholder": "JARVISにメッセージ...",
+    "thinking": "考え中...",
+    "send": "送信",
+    "attach": "ファイル添付",
+    "dropHere": "ファイルをここにドロップ",
+    "clear": "チャットをクリア",
+    "newChat": "新規会話",
+    "loadSession": "セッション読込",
+    "emptyState": {
+      "title": "JARVIS",
+      "subtitle": "今日は何をお手伝いしましょうか？"
+    },
+    "error": "エラーが発生しました。もう一度お試しください。"
+  },
+  "memory": {
+    "title": "メモリーバンク",
+    "synced": "クラウド同期済み",
+    "local": "ローカルストレージ",
+    "tabs": {
+      "diary": "日記",
+      "paintings": "絵画",
+      "media": "メディア",
+      "chats": "会話",
+      "graph": "グラフ",
+      "search": "検索"
+    },
+    "diary": {
+      "placeholder": "日記を書く...",
+      "add": "追加",
+      "search": "日記を検索...",
+      "count": "{{count}}件のエントリ",
+      "date": "日付"
+    },
+    "paintings": {
+      "upload": "画像をドロップまたはタップしてアップロード",
+      "bulk": "一括アップロード対応",
+      "search": "絵画を検索...",
+      "count": "絵画 {{count}}点",
+      "loadMore": "さらに読み込む",
+      "title": "タイトル",
+      "tags": "タグ",
+      "description": "説明",
+      "save": "保存"
+    },
+    "media": {
+      "drop": "音楽または動画ファイルをドロップ",
+      "types": "MP3, WAV, MP4, WebM",
+      "disabled": "メディアアップロード無効",
+      "configure": "設定でR2 Workerを構成してください",
+      "count": "メディア {{count}}件",
+      "reupload": "再アップロード"
+    },
+    "chats": {
+      "count": "会話 {{count}}件",
+      "load": "読込",
+      "delete": "削除"
+    },
+    "graph": {
+      "title": "意味メモリーグラフ",
+      "subtitle": "時間経過とともにノードは減衰します。強化すると維持されます。",
+      "empty": "まだメモリーグラフがありません。もっとチャットしてください。"
+    },
+    "search": {
+      "placeholder": "すべてのメモリを検索...",
+      "results": "検索結果",
+      "empty": "一致する結果がありません。"
+    }
+  },
+  "settings": {
+    "title": "設定",
+    "done": "完了",
+    "persona": {
+      "title": "ペルソナ",
+      "custom": "カスタムペルソナ",
+      "placeholder": "カスタムペルソナを定義...",
+      "useCustom": "カスタムペルソナを使用"
+    },
+    "model": {
+      "title": "AIモデル",
+      "models": {
+        "gemini": "Gemini 3 Flash",
+        "gpt": "GPT-OSS 120B",
+        "claude": "Claude 3.5 Sonnet",
+        "deepseek": "DeepSeek V3",
+        "llama": "Llama 3.1 405B"
+      }
+    },
+    "language": {
+      "title": "言語",
+      "en": "English",
+      "es": "Espanol",
+      "ja": "Japanese",
+      "ko": "Korean",
+      "de": "German"
+    },
+    "notifications": {
+      "title": "通知",
+      "enable": "プッシュ通知を有効化",
+      "inactivity": "非活動リマインダー",
+      "diary_reminder": "日記リマインダー",
+      "weekly_summary": "週間サマリー",
+      "birthday": "誕生日の挨拶",
+      "holidays": "祝日の挨拶",
+      "meal_recommendation": "食事の推薦",
+      "test": "テスト通知を送信"
+    },
+    "apiKey": {
+      "title": "OpenRouter APIキー",
+      "change": "キーを変更",
+      "masked": "セキュリティのためキーは非表示"
+    },
+    "r2": {
+      "title": "R2メディアストレージ",
+      "connected": "接続済み",
+      "notConfigured": "未設定",
+      "change": "変更",
+      "remove": "削除"
+    },
+    "account": {
+      "title": "アカウント",
+      "signOut": "ログアウト",
+      "changeFirebase": "Firebaseを変更"
+    },
+    "security": {
+      "title": "セキュリティ",
+      "warning": "APIキーはローカルに保存されています。本番環境ではFirebase Functionsをプロキシとして使用してください。",
+      "learnMore": "安全なAPIキー管理について詳しく"
+    }
+  },
+  "report": {
+    "title": "一緒に過ごした時間",
+    "subtitle": "共に過ごした時間を振り返ります",
+    "daysTogether": "一緒に過ごした日数",
+    "messagesExchanged": "メッセージ",
+    "memoriesFormed": "形成された記憶",
+    "sections": {
+      "activity": "アクティビティ",
+      "growth": "メモリ成長",
+      "relationships": "新しい関係",
+      "milestones": "マイルストーン",
+      "highlights": "ハイライト"
+    },
+    "milestone": {
+      "firstChat": "最初のチャット",
+      "firstDiary": "最初の日記",
+      "firstPainting": "最初の絵画",
+      "weekTogether": "一週間一緒",
+      "monthTogether": "一か月一緒"
+    },
+    "share": "レポートを共有",
+    "close": "閉じる"
+  },
+  "common": {
+    "cancel": "キャンセル",
+    "save": "保存",
+    "delete": "削除",
+    "edit": "編集",
+    "close": "閉じる",
+    "loading": "読み込み中...",
+    "error": "エラー",
+    "success": "成功",
+    "confirm": "よろしいですか？",
+    "ok": "OK"
+  }
+}

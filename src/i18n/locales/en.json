@@ -1,0 +1,237 @@
+{
+  "app": {
+    "name": "JARVIS",
+    "tagline": "Your Personal AI Companion",
+    "online": "is online",
+    "saySomething": "Say something or attach a file."
+  },
+  "onboarding": {
+    "welcome": "Welcome to JARVIS",
+    "chooseMode": "Choose how you want to start",
+    "starter": {
+      "title": "Starter Mode",
+      "subtitle": "Quick Start",
+      "desc": "Just an OpenRouter API key. Basic chat with local memory storage.",
+      "requirement": "Required: OpenRouter API Key",
+      "features": ["Basic chat", "Local memory (device only)", "Image & file attachments", "No cloud setup needed"],
+      "cta": "Start with API Key"
+    },
+    "advanced": {
+      "title": "Advanced Mode",
+      "subtitle": "Full Experience",
+      "desc": "Firebase + R2 for cloud sync, backup, and multi-device support.",
+      "requirement": "Required: Firebase Config + OpenRouter API Key",
+      "optional": "Optional: Cloudflare R2 for media uploads",
+      "features": ["Everything in Starter", "Cloud backup & sync", "Multi-device access", "Large media uploads", "Push notifications"],
+      "cta": "Full Setup"
+    },
+    "apiKey": {
+      "title": "Enter your OpenRouter API Key",
+      "placeholder": "sk-or-v1-...",
+      "activate": "Activate",
+      "hint": "Get a free key at openrouter.ai/keys",
+      "skip": "I'll set this up later",
+      "error": "Please enter a valid API key (10+ characters)."
+    },
+    "firebase": {
+      "title": "Connect Firebase",
+      "subtitle": "Paste your Firebase config JSON",
+      "placeholder": "{\"apiKey\":\"...\",\"authDomain\":\"...\",...}",
+      "connect": "Connect",
+      "skip": "Skip — Use local storage only",
+      "hint": "Firebase Console > Project Settings > Your apps > Config",
+      "error": "Invalid JSON or missing required fields."
+    },
+    "r2": {
+      "title": "Cloudflare R2 Storage",
+      "subtitle": "For music and video uploads",
+      "optional": "Optional — skip if you don't need media storage.",
+      "placeholder": "https://your-r2-worker.workers.dev",
+      "connect": "Connect",
+      "skip": "Skip — I don't need media storage",
+      "hint": "Deploy the R2 Worker to your Cloudflare account",
+      "error": "Cannot reach the worker URL."
+    },
+    "auth": {
+      "title": "Sign In",
+      "subtitle": "Sign in to sync your memories",
+      "email": "Email",
+      "password": "Password",
+      "signIn": "Sign In",
+      "signUp": "Sign Up",
+      "noAccount": "No account?",
+      "haveAccount": "Have account?",
+      "error": "Authentication failed."
+    },
+    "securityNotice": {
+      "title": "Security Note",
+      "desc": "Your API key is stored locally on your device. For production apps, use a proxy server (like Firebase Functions) to hide keys from the client.",
+      "dismiss": "I understand"
+    }
+  },
+  "chat": {
+    "placeholder": "Message JARVIS...",
+    "thinking": "thinking...",
+    "send": "Send",
+    "attach": "Attach file",
+    "dropHere": "Drop files here",
+    "clear": "Clear chat",
+    "newChat": "New conversation",
+    "loadSession": "Load session",
+    "emptyState": {
+      "title": "JARVIS",
+      "subtitle": "How can I help you today?"
+    },
+    "error": "An error occurred. Please try again."
+  },
+  "memory": {
+    "title": "Memory Bank",
+    "synced": "synced to cloud",
+    "local": "local storage",
+    "tabs": {
+      "diary": "Diary",
+      "paintings": "Paintings",
+      "media": "Media",
+      "chats": "Chats",
+      "graph": "Graph",
+      "search": "Search"
+    },
+    "diary": {
+      "placeholder": "Write a diary entry...",
+      "add": "Add",
+      "search": "Search diary...",
+      "count": "{{count}} entries",
+      "date": "Date"
+    },
+    "paintings": {
+      "upload": "Drop images or tap to upload",
+      "bulk": "Bulk upload with resume",
+      "search": "Search paintings...",
+      "count": "{{count}} paintings",
+      "loadMore": "Load more",
+      "title": "Title",
+      "tags": "Tags",
+      "description": "Description",
+      "save": "Save"
+    },
+    "media": {
+      "drop": "Drop music or video files",
+      "types": "MP3, WAV, MP4, WebM",
+      "disabled": "Media uploads disabled",
+      "configure": "Configure R2 Worker in Settings to enable",
+      "count": "{{count}} media files",
+      "reupload": "Re-upload"
+    },
+    "chats": {
+      "count": "{{count}} conversations",
+      "load": "Load",
+      "delete": "Delete"
+    },
+    "graph": {
+      "title": "Semantic Memory Graph",
+      "subtitle": "Nodes decay over time unless reinforced.",
+      "empty": "No memory graph yet. Chat more to build it."
+    },
+    "search": {
+      "placeholder": "Search across all memories...",
+      "results": "Results",
+      "empty": "No matches found."
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "done": "Done",
+    "persona": {
+      "title": "Persona",
+      "custom": "Custom Persona",
+      "placeholder": "Define your custom persona...",
+      "useCustom": "Use Custom Persona"
+    },
+    "model": {
+      "title": "AI Model",
+      "models": {
+        "gemini": "Gemini 3 Flash",
+        "gpt": "GPT-OSS 120B",
+        "claude": "Claude 3.5 Sonnet",
+        "deepseek": "DeepSeek V3",
+        "llama": "Llama 3.1 405B"
+      }
+    },
+    "language": {
+      "title": "Language",
+      "en": "English",
+      "es": "Espanol",
+      "ja": "Japanese",
+      "ko": "Korean",
+      "de": "German"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "enable": "Enable Push Notifications",
+      "inactivity": "Inactivity Reminder",
+      "diary_reminder": "Diary Reminder",
+      "weekly_summary": "Weekly Summary",
+      "birthday": "Birthday Greeting",
+      "holidays": "Holiday Greetings",
+      "meal_recommendation": "Meal Recommendations",
+      "test": "Send Test Notification"
+    },
+    "apiKey": {
+      "title": "OpenRouter API Key",
+      "change": "Change Key",
+      "masked": "Key is hidden for security"
+    },
+    "r2": {
+      "title": "R2 Media Storage",
+      "connected": "Connected",
+      "notConfigured": "Not configured",
+      "change": "Change",
+      "remove": "Remove"
+    },
+    "account": {
+      "title": "Account",
+      "signOut": "Sign Out",
+      "changeFirebase": "Change Firebase"
+    },
+    "security": {
+      "title": "Security",
+      "warning": "Your API key is stored locally. For production, use Firebase Functions as a proxy.",
+      "learnMore": "Learn more about secure API key handling"
+    }
+  },
+  "report": {
+    "title": "Our Journey Together",
+    "subtitle": "A look back at our time together",
+    "daysTogether": "Days Together",
+    "messagesExchanged": "Messages",
+    "memoriesFormed": "Memories",
+    "sections": {
+      "activity": "Your Activity",
+      "growth": "Memory Growth",
+      "relationships": "New Relationships",
+      "milestones": "Milestones",
+      "highlights": "Highlights"
+    },
+    "milestone": {
+      "firstChat": "First Chat",
+      "firstDiary": "First Diary Entry",
+      "firstPainting": "First Painting",
+      "weekTogether": "One Week Together",
+      "monthTogether": "One Month Together"
+    },
+    "share": "Share Report",
+    "close": "Close"
+  },
+  "common": {
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "confirm": "Are you sure?",
+    "ok": "OK"
+  }
+}

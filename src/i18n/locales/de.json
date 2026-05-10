@@ -1,0 +1,237 @@
+{
+  "app": {
+    "name": "JARVIS",
+    "tagline": "Dein Persoenlicher AI-Begleiter",
+    "online": "ist online",
+    "saySomething": "Schreibe etwas oder fuege eine Datei an."
+  },
+  "onboarding": {
+    "welcome": "Willkommen bei JARVIS",
+    "chooseMode": "Waehle, wie du starten moechtest",
+    "starter": {
+      "title": "Starter-Modus",
+      "subtitle": "Schnellstart",
+      "desc": "Nur ein OpenRouter API-Schluessel. Basis-Chat mit lokalem Speicher.",
+      "requirement": "Erforderlich: OpenRouter API-Schluessel",
+      "features": ["Basis-Chat", "Lokaler Speicher", "Bilder & Dateien", "Keine Cloud-Einrichtung"],
+      "cta": "Mit API-Schluessel starten"
+    },
+    "advanced": {
+      "title": "Erweiterter Modus",
+      "subtitle": "Volle Erfahrung",
+      "desc": "Firebase + R2 fuer Cloud-Sync, Backup und Multi-Geraete-Support.",
+      "requirement": "Erforderlich: Firebase Config + OpenRouter API-Schluessel",
+      "optional": "Optional: Cloudflare R2 fuer Medien-Uploads",
+      "features": ["Alles aus Starter", "Cloud-Backup & Sync", "Multi-Geraete-Zugriff", "Grosse Medien-Uploads", "Push-Benachrichtigungen"],
+      "cta": "Vollstaendige Einrichtung"
+    },
+    "apiKey": {
+      "title": "Gib deinen OpenRouter API-Schluessel ein",
+      "placeholder": "sk-or-v1-...",
+      "activate": "Aktivieren",
+      "hint": "Holen Sie sich einen kostenlosen Schluessel auf openrouter.ai/keys",
+      "skip": "Ich richte es spaeter ein",
+      "error": "Bitte gib einen gueltigen API-Schluessel ein (10+ Zeichen)."
+    },
+    "firebase": {
+      "title": "Firebase verbinden",
+      "subtitle": "Fuege deine Firebase-Config JSON ein",
+      "placeholder": "{\"apiKey\":\"...\",\"authDomain\":\"...\",...}",
+      "connect": "Verbinden",
+      "skip": "Ueberspringen — Nur lokalen Speicher nutzen",
+      "hint": "Firebase Console > Project Settings > Your apps > Config",
+      "error": "Ungueltiges JSON oder fehlende Pflichtfelder."
+    },
+    "r2": {
+      "title": "Cloudflare R2 Speicher",
+      "subtitle": "Fuer Musik- und Video-Uploads",
+      "optional": "Optional — ueberspringen, falls kein Medienspeicher benoetigt.",
+      "placeholder": "https://your-r2-worker.workers.dev",
+      "connect": "Verbinden",
+      "skip": "Ueberspringen — Kein Medienspeicher noetig",
+      "hint": "Deploye den R2 Worker auf deinem Cloudflare-Konto",
+      "error": "Worker-URL nicht erreichbar."
+    },
+    "auth": {
+      "title": "Anmelden",
+      "subtitle": "Melde dich an, um Erinnerungen zu synchronisieren",
+      "email": "E-Mail",
+      "password": "Passwort",
+      "signIn": "Anmelden",
+      "signUp": "Registrieren",
+      "noAccount": "Kein Konto?",
+      "haveAccount": "Bereits Konto?",
+      "error": "Authentifizierung fehlgeschlagen."
+    },
+    "securityNotice": {
+      "title": "Sicherheitshinweis",
+      "desc": "Dein API-Schluessel wird lokal auf deinem Geraet gespeichert. Fuer Produktion nutze einen Proxy-Server wie Firebase Functions.",
+      "dismiss": "Verstanden"
+    }
+  },
+  "chat": {
+    "placeholder": "Nachricht an JARVIS...",
+    "thinking": "denkt nach...",
+    "send": "Senden",
+    "attach": "Datei anhaengen",
+    "dropHere": "Dateien hier ablegen",
+    "clear": "Chat leeren",
+    "newChat": "Neue Unterhaltung",
+    "loadSession": "Sitzung laden",
+    "emptyState": {
+      "title": "JARVIS",
+      "subtitle": "Wie kann ich dir heute helfen?"
+    },
+    "error": "Ein Fehler ist aufgetreten. Bitte versuche es erneut."
+  },
+  "memory": {
+    "title": "Gedaechtnisbank",
+    "synced": "mit Cloud synchronisiert",
+    "local": "lokaler Speicher",
+    "tabs": {
+      "diary": "Tagebuch",
+      "paintings": "Gemaelde",
+      "media": "Medien",
+      "chats": "Chats",
+      "graph": "Graph",
+      "search": "Suche"
+    },
+    "diary": {
+      "placeholder": "Schreibe einen Tagebucheintrag...",
+      "add": "Hinzufuegen",
+      "search": "Tagebuch durchsuchen...",
+      "count": "{{count}} Eintraege",
+      "date": "Datum"
+    },
+    "paintings": {
+      "upload": "Bilder ablegen oder tippen zum Hochladen",
+      "bulk": "Massenupload mit Fortsetzung",
+      "search": "Gemaelde suchen...",
+      "count": "{{count}} Gemaelde",
+      "loadMore": "Mehr laden",
+      "title": "Titel",
+      "tags": "Tags",
+      "description": "Beschreibung",
+      "save": "Speichern"
+    },
+    "media": {
+      "drop": "Musik- oder Videodateien ablegen",
+      "types": "MP3, WAV, MP4, WebM",
+      "disabled": "Medien-Upload deaktiviert",
+      "configure": "R2 Worker in Einstellungen konfigurieren",
+      "count": "{{count}} Mediendateien",
+      "reupload": "Neu hochladen"
+    },
+    "chats": {
+      "count": "{{count}} Unterhaltungen",
+      "load": "Laden",
+      "delete": "Loeschen"
+    },
+    "graph": {
+      "title": "Semantischer Gedaechtnis-Graph",
+      "subtitle": "Knoten zerfallen mit der Zeit, es sei denn, sie werden verstaerkt.",
+      "empty": "Noch kein Gedaechtnis-Graph. Chatte mehr, um ihn aufzubauen."
+    },
+    "search": {
+      "placeholder": "Alle Erinnerungen durchsuchen...",
+      "results": "Ergebnisse",
+      "empty": "Keine Uebereinstimmungen gefunden."
+    }
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "done": "Fertig",
+    "persona": {
+      "title": "Persoenlichkeit",
+      "custom": "Benutzerdefinierte Persoenlichkeit",
+      "placeholder": "Definiere deine benutzerdefinierte Persoenlichkeit...",
+      "useCustom": "Benutzerdefinierte Persoenlichkeit nutzen"
+    },
+    "model": {
+      "title": "KI-Modell",
+      "models": {
+        "gemini": "Gemini 3 Flash",
+        "gpt": "GPT-OSS 120B",
+        "claude": "Claude 3.5 Sonnet",
+        "deepseek": "DeepSeek V3",
+        "llama": "Llama 3.1 405B"
+      }
+    },
+    "language": {
+      "title": "Sprache",
+      "en": "English",
+      "es": "Espanol",
+      "ja": "Japanese",
+      "ko": "Korean",
+      "de": "German"
+    },
+    "notifications": {
+      "title": "Benachrichtigungen",
+      "enable": "Push-Benachrichtigungen aktivieren",
+      "inactivity": "Inaktivitaetserinnerung",
+      "diary_reminder": "Tagebuch-Erinnerung",
+      "weekly_summary": "Wochenzusammenfassung",
+      "birthday": "Geburtstagsgruss",
+      "holidays": "Feiertagsgruesse",
+      "meal_recommendation": "Mahlzeitsempfehlungen",
+      "test": "Testbenachrichtigung senden"
+    },
+    "apiKey": {
+      "title": "OpenRouter API-Schluessel",
+      "change": "Schluessel aendern",
+      "masked": "Schluessel aus Sicherheitsgruenden verborgen"
+    },
+    "r2": {
+      "title": "R2 Medienspeicher",
+      "connected": "Verbunden",
+      "notConfigured": "Nicht konfiguriert",
+      "change": "Aendern",
+      "remove": "Entfernen"
+    },
+    "account": {
+      "title": "Konto",
+      "signOut": "Abmelden",
+      "changeFirebase": "Firebase aendern"
+    },
+    "security": {
+      "title": "Sicherheit",
+      "warning": "Dein API-Schluessel wird lokal gespeichert. Fuer Produktion nutze Firebase Functions als Proxy.",
+      "learnMore": "Mehr ueber sichere API-Schluessel-Verwaltung"
+    }
+  },
+  "report": {
+    "title": "Unsere Zeit Zusammen",
+    "subtitle": "Ein Rueckblick auf unsere gemeinsame Zeit",
+    "daysTogether": "Tage Zusammen",
+    "messagesExchanged": "Nachrichten",
+    "memoriesFormed": "Erinnerungen",
+    "sections": {
+      "activity": "Deine Aktivitaet",
+      "growth": "Gedaechtniswachstum",
+      "relationships": "Neue Beziehungen",
+      "milestones": "Meilensteine",
+      "highlights": "Hoehepunkte"
+    },
+    "milestone": {
+      "firstChat": "Erster Chat",
+      "firstDiary": "Erster Tagebucheintrag",
+      "firstPainting": "Erstes Gemaelde",
+      "weekTogether": "Eine Woche Zusammen",
+      "monthTogether": "Ein Monat Zusammen"
+    },
+    "share": "Bericht teilen",
+    "close": "Schliessen"
+  },
+  "common": {
+    "cancel": "Abbrechen",
+    "save": "Speichern",
+    "delete": "Loeschen",
+    "edit": "Bearbeiten",
+    "close": "Schliessen",
+    "loading": "Laedt...",
+    "error": "Fehler",
+    "success": "Erfolg",
+    "confirm": "Bist du sicher?",
+    "ok": "OK"
+  }
+}

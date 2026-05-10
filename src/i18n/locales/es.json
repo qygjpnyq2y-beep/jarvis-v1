@@ -1,0 +1,237 @@
+{
+  "app": {
+    "name": "JARVIS",
+    "tagline": "Tu Companero de IA Personal",
+    "online": "esta en linea",
+    "saySomething": "Escribe algo o adjunta un archivo."
+  },
+  "onboarding": {
+    "welcome": "Bienvenido a JARVIS",
+    "chooseMode": "Elige como quieres empezar",
+    "starter": {
+      "title": "Modo Inicio",
+      "subtitle": "Inicio Rapido",
+      "desc": "Solo necesitas una clave API de OpenRouter. Chat basico con almacenamiento local.",
+      "requirement": "Requerido: Clave API de OpenRouter",
+      "features": ["Chat basico", "Memoria local", "Imagenes y archivos", "Sin configuracion en la nube"],
+      "cta": "Empezar con API Key"
+    },
+    "advanced": {
+      "title": "Modo Avanzado",
+      "subtitle": "Experiencia Completa",
+      "desc": "Firebase + R2 para sincronizacion en la nube, respaldo y multi-dispositivo.",
+      "requirement": "Requerido: Firebase Config + OpenRouter API Key",
+      "optional": "Opcional: Cloudflare R2 para subida de medios",
+      "features": ["Todo lo del modo inicio", "Respaldo y sincronizacion", "Multi-dispositivo", "Subida de medios grandes", "Notificaciones push"],
+      "cta": "Configuracion Completa"
+    },
+    "apiKey": {
+      "title": "Introduce tu clave API de OpenRouter",
+      "placeholder": "sk-or-v1-...",
+      "activate": "Activar",
+      "hint": "Obtén una clave gratis en openrouter.ai/keys",
+      "skip": "Configurare despues",
+      "error": "Introduce una clave API valida (10+ caracteres)."
+    },
+    "firebase": {
+      "title": "Conectar Firebase",
+      "subtitle": "Pega tu JSON de configuracion de Firebase",
+      "placeholder": "{\"apiKey\":\"...\",\"authDomain\":\"...\",...}",
+      "connect": "Conectar",
+      "skip": "Omitir - Usar solo almacenamiento local",
+      "hint": "Firebase Console > Project Settings > Your apps > Config",
+      "error": "JSON invalido o campos requeridos faltantes."
+    },
+    "r2": {
+      "title": "Almacenamiento Cloudflare R2",
+      "subtitle": "Para subida de musica y video",
+      "optional": "Opcional - omite si no necesitas almacenamiento de medios.",
+      "placeholder": "https://your-r2-worker.workers.dev",
+      "connect": "Conectar",
+      "skip": "Omitir - No necesito almacenamiento de medios",
+      "hint": "Despliega el R2 Worker en tu cuenta de Cloudflare",
+      "error": "No se puede alcanzar la URL del worker."
+    },
+    "auth": {
+      "title": "Iniciar Sesion",
+      "subtitle": "Inicia sesion para sincronizar tus recuerdos",
+      "email": "Correo",
+      "password": "Contrasena",
+      "signIn": "Iniciar Sesion",
+      "signUp": "Registrarse",
+      "noAccount": "No tienes cuenta?",
+      "haveAccount": "Ya tienes cuenta?",
+      "error": "Autenticacion fallida."
+    },
+    "securityNotice": {
+      "title": "Nota de Seguridad",
+      "desc": "Tu clave API se almacena localmente en tu dispositivo. Para produccion, usa un servidor proxy como Firebase Functions.",
+      "dismiss": "Entendido"
+    }
+  },
+  "chat": {
+    "placeholder": "Mensaje a JARVIS...",
+    "thinking": "pensando...",
+    "send": "Enviar",
+    "attach": "Adjuntar archivo",
+    "dropHere": "Suelta archivos aqui",
+    "clear": "Limpiar chat",
+    "newChat": "Nueva conversacion",
+    "loadSession": "Cargar sesion",
+    "emptyState": {
+      "title": "JARVIS",
+      "subtitle": "En que puedo ayudarte hoy?"
+    },
+    "error": "Ocurrio un error. Intenta de nuevo."
+  },
+  "memory": {
+    "title": "Banco de Memoria",
+    "synced": "sincronizado en la nube",
+    "local": "almacenamiento local",
+    "tabs": {
+      "diary": "Diario",
+      "paintings": "Pinturas",
+      "media": "Medios",
+      "chats": "Chats",
+      "graph": "Grafo",
+      "search": "Buscar"
+    },
+    "diary": {
+      "placeholder": "Escribe una entrada de diario...",
+      "add": "Anadir",
+      "search": "Buscar en diario...",
+      "count": "{{count}} entradas",
+      "date": "Fecha"
+    },
+    "paintings": {
+      "upload": "Suelta imagenes o toca para subir",
+      "bulk": "Subida masiva con reanudacion",
+      "search": "Buscar pinturas...",
+      "count": "{{count}} pinturas",
+      "loadMore": "Cargar mas",
+      "title": "Titulo",
+      "tags": "Etiquetas",
+      "description": "Descripcion",
+      "save": "Guardar"
+    },
+    "media": {
+      "drop": "Suelta archivos de musica o video",
+      "types": "MP3, WAV, MP4, WebM",
+      "disabled": "Subida de medios deshabilitada",
+      "configure": "Configura R2 Worker en Ajustes",
+      "count": "{{count}} archivos de medios",
+      "reupload": "Re-subir"
+    },
+    "chats": {
+      "count": "{{count}} conversaciones",
+      "load": "Cargar",
+      "delete": "Borrar"
+    },
+    "graph": {
+      "title": "Grafo de Memoria Semantica",
+      "subtitle": "Los nodos decaen con el tiempo a menos que se refuercen.",
+      "empty": "Aun no hay grafo de memoria. Chatea mas para construirlo."
+    },
+    "search": {
+      "placeholder": "Buscar en todas las memorias...",
+      "results": "Resultados",
+      "empty": "No se encontraron coincidencias."
+    }
+  },
+  "settings": {
+    "title": "Ajustes",
+    "done": "Hecho",
+    "persona": {
+      "title": "Persona",
+      "custom": "Persona Personalizada",
+      "placeholder": "Define tu persona personalizada...",
+      "useCustom": "Usar Persona Personalizada"
+    },
+    "model": {
+      "title": "Modelo de IA",
+      "models": {
+        "gemini": "Gemini 3 Flash",
+        "gpt": "GPT-OSS 120B",
+        "claude": "Claude 3.5 Sonnet",
+        "deepseek": "DeepSeek V3",
+        "llama": "Llama 3.1 405B"
+      }
+    },
+    "language": {
+      "title": "Idioma",
+      "en": "English",
+      "es": "Espanol",
+      "ja": "Japanese",
+      "ko": "Korean",
+      "de": "German"
+    },
+    "notifications": {
+      "title": "Notificaciones",
+      "enable": "Activar Notificaciones Push",
+      "inactivity": "Recordatorio de Inactividad",
+      "diary_reminder": "Recordatorio de Diario",
+      "weekly_summary": "Resumen Semanal",
+      "birthday": "Saludo de Cumpleanos",
+      "holidays": "Saludos de Festivos",
+      "meal_recommendation": "Recomendaciones de Comidas",
+      "test": "Enviar Notificacion de Prueba"
+    },
+    "apiKey": {
+      "title": "Clave API de OpenRouter",
+      "change": "Cambiar Clave",
+      "masked": "Clave oculta por seguridad"
+    },
+    "r2": {
+      "title": "Almacenamiento R2",
+      "connected": "Conectado",
+      "notConfigured": "No configurado",
+      "change": "Cambiar",
+      "remove": "Eliminar"
+    },
+    "account": {
+      "title": "Cuenta",
+      "signOut": "Cerrar Sesion",
+      "changeFirebase": "Cambiar Firebase"
+    },
+    "security": {
+      "title": "Seguridad",
+      "warning": "Tu clave API se almacena localmente. Para produccion, usa Firebase Functions como proxy.",
+      "learnMore": "Aprende mas sobre manejo seguro de claves API"
+    }
+  },
+  "report": {
+    "title": "Nuestro Tiempo Juntos",
+    "subtitle": "Un vistazo a nuestro tiempo compartido",
+    "daysTogether": "Dias Juntos",
+    "messagesExchanged": "Mensajes",
+    "memoriesFormed": "Recuerdos",
+    "sections": {
+      "activity": "Tu Actividad",
+      "growth": "Crecimiento de Memoria",
+      "relationships": "Nuevas Relaciones",
+      "milestones": "Hitos",
+      "highlights": "Destacados"
+    },
+    "milestone": {
+      "firstChat": "Primer Chat",
+      "firstDiary": "Primera Entrada de Diario",
+      "firstPainting": "Primera Pintura",
+      "weekTogether": "Una Semana Juntos",
+      "monthTogether": "Un Mes Juntos"
+    },
+    "share": "Compartir Reporte",
+    "close": "Cerrar"
+  },
+  "common": {
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "close": "Cerrar",
+    "loading": "Cargando...",
+    "error": "Error",
+    "success": "Exito",
+    "confirm": "Estas seguro?",
+    "ok": "OK"
+  }
+}

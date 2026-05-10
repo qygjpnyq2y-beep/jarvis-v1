@@ -1,0 +1,237 @@
+{
+  "app": {
+    "name": "JARVIS",
+    "tagline": "당신의 개인 AI 동반자",
+    "online": "온라인 상태입니다",
+    "saySomething": "메시지를 입력하거나 파일을 첨부하세요."
+  },
+  "onboarding": {
+    "welcome": "JARVIS에 오신 것을 환영합니다",
+    "chooseMode": "시작 방식을 선택하세요",
+    "starter": {
+      "title": "스타터 모드",
+      "subtitle": "빠른 시작",
+      "desc": "OpenRouter API 키 하나만 있으면 됩니다. 로컬 메모리 저장소를 사용한 기본 채팅.",
+      "requirement": "필수: OpenRouter API 키",
+      "features": ["기본 채팅", "로컬 메모리 (기기 전용)", "이미지 및 파일 첨부", "클우드 설정 불필요"],
+      "cta": "API 키로 시작"
+    },
+    "advanced": {
+      "title": "고급 모드",
+      "subtitle": "전체 기능",
+      "desc": "Firebase + R2로 클라우드 동기화, 백업, 멀티 디바이스를 지원합니다.",
+      "requirement": "필수: Firebase 설정 + OpenRouter API 키",
+      "optional": "선택: 미디어 업로드용 Cloudflare R2",
+      "features": ["스타터의 모든 기능", "클우드 백업 및 동기화", "멀티 디바이스 접근", "대용량 미디어 업로드", "푸시 알림"],
+      "cta": "전체 설정"
+    },
+    "apiKey": {
+      "title": "OpenRouter API 키를 입력하세요",
+      "placeholder": "sk-or-v1-...",
+      "activate": "활성화",
+      "hint": "openrouter.ai/keys에서 물론 키를 받으세요",
+      "skip": "나중에 설정하기",
+      "error": "올바른 API 키를 입력하세요 (10자 이상)."
+    },
+    "firebase": {
+      "title": "Firebase 연결",
+      "subtitle": "Firebase 설정 JSON을 붙여넣으세요",
+      "placeholder": "{\"apiKey\":\"...\",\"authDomain\":\"...\",...}",
+      "connect": "연결",
+      "skip": "걱넘기 — 로컬 저장소만 사용",
+      "hint": "Firebase Console > Project Settings > Your apps > Config",
+      "error": "잘못된 JSON 또는 필수 필드 누락."
+    },
+    "r2": {
+      "title": "Cloudflare R2 저장소",
+      "subtitle": "음악 및 영상 업로드용",
+      "optional": "선택 사항 — 미디어 저장이 필요 없으면 걱넘기세요.",
+      "placeholder": "https://your-r2-worker.workers.dev",
+      "connect": "연결",
+      "skip": "걱넘기 — 미디어 저장 불필요",
+      "hint": "R2 Worker를 Cloudflare 계정에 배포하세요",
+      "error": "Worker URL에 접근할 수 없습니다."
+    },
+    "auth": {
+      "title": "로그인",
+      "subtitle": "기억을 동기화하려면 로그인하세요",
+      "email": "이메일",
+      "password": "비밀번호",
+      "signIn": "로그인",
+      "signUp": "회원가입",
+      "noAccount": "계정이 없으신가요?",
+      "haveAccount": "계정이 있으신가요?",
+      "error": "인증에 실패했습니다."
+    },
+    "securityNotice": {
+      "title": "보안 안내",
+      "desc": "API 키는 기기에 로컬로 저장됩니다. 프로덕션 환경에서는 클라이언트에 키를 노출하지 않도록 Firebase Functions 등의 프록시 서버를 사용하세요.",
+      "dismiss": "이해했습니다"
+    }
+  },
+  "chat": {
+    "placeholder": "JARVIS에게 메시지...",
+    "thinking": "생각 중...",
+    "send": "전송",
+    "attach": "파일 첨부",
+    "dropHere": "파일을 여기에 놓으세요",
+    "clear": "채팅 지우기",
+    "newChat": "새 대화",
+    "loadSession": "세션 불러오기",
+    "emptyState": {
+      "title": "JARVIS",
+      "subtitle": "무엇을 도와드릴까요?"
+    },
+    "error": "오류가 발생했습니다. 다시 시도해 주세요."
+  },
+  "memory": {
+    "title": "메모리 뱅크",
+    "synced": "클우드 동기화됨",
+    "local": "로컬 저장소",
+    "tabs": {
+      "diary": "일기",
+      "paintings": "그림",
+      "media": "미디어",
+      "chats": "대화",
+      "graph": "그래프",
+      "search": "검색"
+    },
+    "diary": {
+      "placeholder": "일기를 작성하세요...",
+      "add": "추가",
+      "search": "일기 검색...",
+      "count": "{{count}}개의 항목",
+      "date": "날짜"
+    },
+    "paintings": {
+      "upload": "이미지를 놓거나 탭하여 업로드",
+      "bulk": "대량 업로드 지원",
+      "search": "그림 검색...",
+      "count": "그림 {{count}}개",
+      "loadMore": "더 불러오기",
+      "title": "제목",
+      "tags": "태그",
+      "description": "설명",
+      "save": "저장"
+    },
+    "media": {
+      "drop": "음악 또는 영상 파일을 놓으세요",
+      "types": "MP3, WAV, MP4, WebM",
+      "disabled": "미디어 업로드 비활성화됨",
+      "configure": "설정에서 R2 Worker를 구성하세요",
+      "count": "미디어 {{count}}개",
+      "reupload": "재업로드"
+    },
+    "chats": {
+      "count": "대화 {{count}}개",
+      "load": "불러오기",
+      "delete": "삭제"
+    },
+    "graph": {
+      "title": "의미론적 메모리 그래프",
+      "subtitle": "시간이 지나면 노드가 감소합니다. 강화하면 유지됩니다.",
+      "empty": "아직 메모리 그래프가 없습니다. 더 대화필보세요."
+    },
+    "search": {
+      "placeholder": "모든 메모리 검색...",
+      "results": "검색 결과",
+      "empty": "검색 결과가 없습니다."
+    }
+  },
+  "settings": {
+    "title": "설정",
+    "done": "완료",
+    "persona": {
+      "title": "페르소나",
+      "custom": "커스텀 페르소나",
+      "placeholder": "커스텀 페르소나를 정의하세요...",
+      "useCustom": "커스텀 페르소나 사용"
+    },
+    "model": {
+      "title": "AI 모델",
+      "models": {
+        "gemini": "Gemini 3 Flash",
+        "gpt": "GPT-OSS 120B",
+        "claude": "Claude 3.5 Sonnet",
+        "deepseek": "DeepSeek V3",
+        "llama": "Llama 3.1 405B"
+      }
+    },
+    "language": {
+      "title": "언어",
+      "en": "English",
+      "es": "Espanol",
+      "ja": "Japanese",
+      "ko": "Korean",
+      "de": "German"
+    },
+    "notifications": {
+      "title": "알림",
+      "enable": "푸시 알림 활성화",
+      "inactivity": "부재중 알림",
+      "diary_reminder": "일기 알림",
+      "weekly_summary": "주간 요약",
+      "birthday": "생일 축하",
+      "holidays": "공휴일 알림",
+      "meal_recommendation": "식사 추천",
+      "test": "테스트 알림 전송"
+    },
+    "apiKey": {
+      "title": "OpenRouter API 키",
+      "change": "키 변경",
+      "masked": "보안을 위해 키가 숨겨져 있습니다"
+    },
+    "r2": {
+      "title": "R2 미디어 저장소",
+      "connected": "연결됨",
+      "notConfigured": "설정되지 않음",
+      "change": "변경",
+      "remove": "제거"
+    },
+    "account": {
+      "title": "계정",
+      "signOut": "로그아웃",
+      "changeFirebase": "Firebase 변경"
+    },
+    "security": {
+      "title": "보안",
+      "warning": "API 키가 로컬에 저장되어 있습니다. 프로덕션 환경에서는 Firebase Functions를 프록시로 사용하세요.",
+      "learnMore": "안전한 API 키 처리에 대해 더 알아보기"
+    }
+  },
+  "report": {
+    "title": "우리가 함께한 시간",
+    "subtitle": "함께한 시간을 돌아봅니다",
+    "daysTogether": "함께한 날짜",
+    "messagesExchanged": "교환한 메시지",
+    "memoriesFormed": "형성된 기억",
+    "sections": {
+      "activity": "활동량",
+      "growth": "메모리 성장",
+      "relationships": "새로운 관계",
+      "milestones": "마일스톤",
+      "highlights": "하이라이트"
+    },
+    "milestone": {
+      "firstChat": "첫 대화",
+      "firstDiary": "첫 일기",
+      "firstPainting": "첫 그림",
+      "weekTogether": "함께한 일주일",
+      "monthTogether": "함께한 한 달"
+    },
+    "share": "보고서 공유",
+    "close": "닫기"
+  },
+  "common": {
+    "cancel": "취소",
+    "save": "저장",
+    "delete": "삭제",
+    "edit": "편집",
+    "close": "닫기",
+    "loading": "로딩 중...",
+    "error": "오류",
+    "success": "성공",
+    "confirm": "정말로 진행하시겠습니까?",
+    "ok": "확인"
+  }
+}
