@@ -21,6 +21,8 @@ interface AppStore {
   setFbConfig: (c: Record<string, string> | null) => void;
   currentUser: { uid: string; email: string | null } | null;
   setCurrentUser: (u: AppStore['currentUser']) => void;
+  fbInitialized: boolean;
+  setFbInitialized: (v: boolean) => void;
 
   // R2 (optional)
   r2Url: string;
@@ -104,6 +106,8 @@ export const useAppStore = create<AppStore>((set) => ({
   setFbConfig: (c) => set({ fbConfig: c }),
   currentUser: null,
   setCurrentUser: (u) => set({ currentUser: u }),
+  fbInitialized: false,
+  setFbInitialized: (v) => set({ fbInitialized: v }),
 
   r2Url: '',
   setR2Url: (u) => set({ r2Url: u }),

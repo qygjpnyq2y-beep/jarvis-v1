@@ -1,14 +1,16 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Database, ArrowRight, SkipForward } from 'lucide-react';
+import { Database, ArrowRight, SkipForward, Check, AlertCircle } from 'lucide-react';
 import { useAppStore } from '@/store/useAppStore';
 import { setSetting } from '@/lib/db';
+import { initFirebase, isFirebaseReady } from '@/lib/firebase';
 
 export default function FirebaseSetup() {
   const { t } = useTranslation();
-  const { setScreen, setFbConfig } = useAppStore();
+  const { setScreen, setFbConfig, setFbInitialized, setCurrentUser, orKey } = useAppStore();
   const [configJson, setConfigJson] = useState('');
   const [error, setError] = useState('');
+  const [status, setStatus] = useState<'idle' | 'connecting' | 'success'>('idle');
 
   const connect = async () => {
     const raw = configJson.trim();
@@ -17,6 +19,7 @@ export default function FirebaseSetup() {
       setError(t('onboarding.firebase.error'));
       return;
     }
+    setStatus('connecting');
     try {
       let cfg: Record<string, string>;
       if (raw.startsWith('{')) {
@@ -26,19 +29,54 @@ export default function FirebaseSetup() {
       }
       if (!cfg.apiKey || !cfg.projectId) {
         setError('Missing apiKey or projectId');
+        setStatus('idle');
         return;
       }
+
+      // Actually initialize Firebase SDK
+      const ok = initFirebase(cfg);
+      if (!ok) {
+        setError('Failed to initialize Firebase. Check your config.');
+        setStatus('idle');
+        return;
+      }
+
+      if (!isFirebaseReady()) {
+        setError('Firebase SDK init failed silently.');
+        setStatus('idle');
+        return;
+      }
+
+      // Save to IndexedDB
       setFbConfig(cfg);
       await setSetting('fbConfig', cfg);
-      // Go to app (or R2 setup if in advanced mode)
-      setScreen('app');
+      setFbInitialized(true);
+
+      // Generate anonymous user ID if no auth
+      const uid = 'user_' + Math.random().toString(36).slice(2, 10);
+      localStorage.setItem('jarvis_uid', uid);
+      setCurrentUser({ uid, email: null });
+
+      setStatus('success');
+
+      // Small delay then go to app
+      setTimeout(() => {
+        if (orKey) {
+          setScreen('app');
+        } else {
+          // Need API key first
+          setScreen('apikey');
+        }
+      }, 800);
     } catch {
       setError(t('onboarding.firebase.error'));
+      setStatus('idle');
     }
   };
 
   const skip = () => {
-    setScreen('app');
+    setFbInitialized(false);
+    setScreen(orKey ? 'app' : 'apikey');
   };
 
   return (
@@ -61,33 +99,59 @@ export default function FirebaseSetup() {
       </div>
 
       <div className="w-full max-w-sm space-y-3">
-        <textarea
-          value={configJson}
-          onChange={(e) => { setConfigJson(e.target.value); setError(''); }}
-          placeholder={t('onboarding.firebase.placeholder')}
-          className="w-full h-36 px-4 py-3 rounded-2xl bg-white/[0.03] border border-white/10 text-white text-xs placeholder:text-white/20 focus:outline-none focus:border-blue-500/40 focus:bg-blue-500/[0.03] resize-none font-mono leading-relaxed"
-          autoFocus
-        />
+        {status === 'success' ? (
+          <div className="flex flex-col items-center gap-3 p-6 rounded-2xl bg-green-500/[0.05] border border-green-500/20">
+            <div className="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center">
+              <Check className="w-6 h-6 text-green-400" />
+            </div>
+            <p className="text-green-400 text-sm font-medium">Firebase Connected!</p>
+            <p className="text-white/30 text-xs">Redirecting...</p>
+          </div>
+        ) : (
+          <>
+            <textarea
+              value={configJson}
+              onChange={(e) => { setConfigJson(e.target.value); setError(''); }}
+              placeholder={t('onboarding.firebase.placeholder')}
+              className="w-full h-36 px-4 py-3 rounded-2xl bg-white/[0.03] border border-white/10 text-white text-xs placeholder:text-white/20 focus:outline-none focus:border-blue-500/40 focus:bg-blue-500/[0.03] resize-none font-mono leading-relaxed"
+              autoFocus
+              disabled={status === 'connecting'}
+            />
 
-        {error && (
-          <p className="text-red-400 text-xs pl-1">{error}</p>
+            {error && (
+              <div className="flex items-start gap-2 p-3 rounded-xl bg-red-500/[0.05] border border-red-500/10">
+                <AlertCircle className="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5" />
+                <p className="text-red-400 text-xs">{error}</p>
+              </div>
+            )}
+
+            <button
+              onClick={connect}
+              disabled={status === 'connecting'}
+              className="w-full py-4 rounded-2xl bg-gradient-to-r from-blue-500 to-blue-600 text-black font-bold text-sm tracking-wider hover:shadow-lg hover:shadow-blue-500/25 active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+            >
+              {status === 'connecting' ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+                  Connecting...
+                </>
+              ) : (
+                <>
+                  {t('onboarding.firebase.connect')}
+                  <ArrowRight className="w-4 h-4" />
+                </>
+              )}
+            </button>
+
+            <button
+              onClick={skip}
+              className="w-full flex items-center justify-center gap-2 py-3 text-white/30 text-xs hover:text-blue-400 transition-colors"
+            >
+              <SkipForward className="w-3 h-3" />
+              {t('onboarding.firebase.skip')}
+            </button>
+          </>
         )}
-
-        <button
-          onClick={connect}
-          className="w-full py-4 rounded-2xl bg-gradient-to-r from-blue-500 to-blue-600 text-black font-bold text-sm tracking-wider hover:shadow-lg hover:shadow-blue-500/25 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
-        >
-          {t('onboarding.firebase.connect')}
-          <ArrowRight className="w-4 h-4" />
-        </button>
-
-        <button
-          onClick={skip}
-          className="w-full flex items-center justify-center gap-2 py-3 text-white/30 text-xs hover:text-blue-400 transition-colors"
-        >
-          <SkipForward className="w-3 h-3" />
-          {t('onboarding.firebase.skip')}
-        </button>
       </div>
 
       <p className="mt-6 text-white/20 text-[11px] text-center max-w-xs leading-relaxed">

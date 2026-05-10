@@ -9,6 +9,7 @@ import {
 import { useAppStore, PRESETS, MODELS } from '@/store/useAppStore';
 import { streamChat } from '@/lib/openrouter';
 import { db, setSetting } from '@/lib/db';
+import { isFirebaseReady, fbLoadDiary, fbLoadPaintings, fbLoadMedia, fbLoadSessions } from '@/lib/firebase';
 import type { Message, Attachment } from '@/types';
 
 export default function Chat() {
@@ -184,16 +185,38 @@ export default function Chat() {
 
   const refreshMemory = async () => {
     try {
-      const [d, p, m, s] = await Promise.all([
-        db.diary.orderBy('ts').reverse().toArray(),
-        db.paintings.orderBy('ts').reverse().limit(30).toArray(),
-        db.media.orderBy('ts').reverse().limit(30).toArray(),
-        db.sessions.orderBy('ts').reverse().limit(20).toArray(),
-      ]);
-      setDiary(d);
-      setPaintings(p);
-      setMedia(m);
-      setSessions(s);
+      if (isFirebaseReady()) {
+        // Read from Firebase Firestore
+        const [d, p, m, s] = await Promise.all([
+          fbLoadDiary(),
+          fbLoadPaintings(),
+          fbLoadMedia(),
+          fbLoadSessions(),
+        ]);
+        setDiary(d);
+        setPaintings(p);
+        setMedia(m);
+        setSessions(s);
+        // Also sync to IndexedDB for offline
+        await Promise.all([
+          ...d.map(item => db.diary.put(item)),
+          ...p.map(item => db.paintings.put(item)),
+          ...m.map(item => db.media.put(item)),
+          ...s.map(item => db.sessions.put(item)),
+        ]);
+      } else {
+        // Read from IndexedDB (local only)
+        const [d, p, m, s] = await Promise.all([
+          db.diary.orderBy('ts').reverse().toArray(),
+          db.paintings.orderBy('ts').reverse().limit(30).toArray(),
+          db.media.orderBy('ts').reverse().limit(30).toArray(),
+          db.sessions.orderBy('ts').reverse().limit(20).toArray(),
+        ]);
+        setDiary(d);
+        setPaintings(p);
+        setMedia(m);
+        setSessions(s);
+      }
     } catch (e) {
       console.error('Memory refresh error:', e);
     }

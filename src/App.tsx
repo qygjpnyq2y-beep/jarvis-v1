@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useAppStore } from '@/store/useAppStore';
 import { getSetting, setSetting } from '@/lib/db';
+import { initFirebase, isFirebaseReady } from '@/lib/firebase';
 import Welcome from '@/sections/Welcome';
 import ApiKeySetup from '@/sections/ApiKeySetup';
 import FirebaseSetup from '@/sections/FirebaseSetup';
@@ -14,7 +15,7 @@ function App() {
   const {
     screen, setScreen,
     setLang, setOrKey, setR2Url, setActiveModel,
-    setUserBirthday, setFbConfig,
+    setUserBirthday, setFbConfig, setFbInitialized,
     initialized, setInitialized, setMode,
   } = useAppStore();
 
@@ -33,10 +34,18 @@ function App() {
 
         if (savedLang) setLang(savedLang as 'en' | 'es' | 'ja' | 'ko' | 'de');
         if (savedBirthday) setUserBirthday(savedBirthday);
-        if (savedFb) setFbConfig(savedFb);
+        if (savedFb) {
+          setFbConfig(savedFb);
+          // Auto-init Firebase on app start if config exists
+          const ok = initFirebase(savedFb);
+          if (ok && isFirebaseReady()) {
+            setFbInitialized(true);
+            setMode('advanced');
+          }
+        }
         if (savedKey) {
           setOrKey(savedKey);
-          setMode(savedFb ? 'advanced' : 'starter');
+          setMode((savedFb && isFirebaseReady()) ? 'advanced' : 'starter');
           setScreen('app');
         }
         if (savedR2) setR2Url(savedR2);
