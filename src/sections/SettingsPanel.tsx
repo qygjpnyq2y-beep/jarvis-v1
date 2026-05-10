@@ -21,6 +21,7 @@ export default function SettingsPanel() {
     lang, setLang,
     currentUser,
     notifSettings, setNotifSettings,
+    userBirthday, setUserBirthday,
     setMode, setScreen,
   } = useAppStore();
 
@@ -234,6 +235,19 @@ export default function SettingsPanel() {
                 </button>
               </div>
             ))}
+            {/* My Birthday Date Input */}
+            <div className="flex items-center justify-between py-3 border-b border-white/[0.06]">
+              <span className="text-sm text-white/50">My Birthday</span>
+              <input
+                type="date"
+                value={userBirthday}
+                onChange={(e) => {
+                  setUserBirthday(e.target.value);
+                  setSetting('userBirthday', e.target.value);
+                }}
+                className="px-3 py-2 rounded-lg bg-white/[0.03] border border-white/10 text-white/60 text-sm focus:outline-none focus:border-blue-500/30"
+              />
+            </div>
           </div>
 
           {/* Divider */}

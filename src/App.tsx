@@ -3,6 +3,7 @@ import { useAppStore } from '@/store/useAppStore';
 import { getSetting, setSetting } from '@/lib/db';
 import Welcome from '@/sections/Welcome';
 import ApiKeySetup from '@/sections/ApiKeySetup';
+import FirebaseSetup from '@/sections/FirebaseSetup';
 import Chat from '@/sections/Chat';
 import SettingsPanel from '@/sections/SettingsPanel';
 import MemoryPanel from '@/sections/MemoryPanel';
@@ -64,7 +65,7 @@ function App() {
     <div className="min-h-screen bg-black text-white">
       {screen === 'welcome' && <Welcome />}
       {screen === 'apikey' && <ApiKeySetup />}
-      {(screen === 'firebase' || screen === 'auth' || screen === 'r2') && <ApiKeySetup />}
+      {screen === 'firebase' && <FirebaseSetup />}
       {screen === 'app' && <Chat />}
 
       <SettingsPanel />
