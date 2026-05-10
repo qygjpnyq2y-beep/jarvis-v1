@@ -11,12 +11,14 @@ import {
   limit,
   type Firestore,
 } from 'firebase/firestore';
-import { getAuth, type Auth } from 'firebase/auth';
+import { getAuth, type Auth, signInAnonymously, onAuthStateChanged } from 'firebase/auth';
 import type { DiaryEntry, Painting, MediaFile, ChatSession, SemanticMemory, EpisodicMemory, MemoryRelation, MemoryTheme } from '@/types';
 
 let app: FirebaseApp | null = null;
 let db: Firestore | null = null;
 let auth: Auth | null = null;
+let currentUid: string | null = null;
+let authCallbacks: Array<(uid: string | null) => void> = [];
 
 export function initFirebase(config: Record<string, string>): boolean {
   try {
@@ -24,6 +26,18 @@ export function initFirebase(config: Record<string, string>): boolean {
     app = initializeApp(config);
     db = getFirestore(app);
     auth = getAuth(app);
+
+    // Listen for auth state changes
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        currentUid = user.uid;
+        localStorage.setItem('jarvis_uid', user.uid);
+      }
+      // Notify all waiting callbacks
+      authCallbacks.forEach((cb) => cb(currentUid));
+      authCallbacks = [];
+    });
+
     return true;
   } catch (e) {
     console.error('[Firebase] Init error:', e);
@@ -32,7 +46,7 @@ export function initFirebase(config: Record<string, string>): boolean {
 }
 
 export function isFirebaseReady(): boolean {
-  return app !== null && db !== null;
+  return app !== null && db !== null && auth !== null;
 }
 
 export function getFirebaseDb(): Firestore | null {
@@ -43,8 +57,60 @@ export function getFirebaseAuth(): Auth | null {
   return auth;
 }
 
+// Wait for auth to be ready (anonymous sign-in or existing session)
+export function waitForAuth(timeoutMs = 15000): Promise<string | null> {
+  return new Promise((resolve) => {
+    if (!auth) {
+      resolve(null);
+      return;
+    }
+    // Already have a user?
+    if (auth.currentUser) {
+      currentUid = auth.currentUser.uid;
+      resolve(currentUid);
+      return;
+    }
+    // Wait for auth state
+    const timeout = setTimeout(() => {
+      resolve(currentUid || localStorage.getItem('jarvis_uid'));
+    }, timeoutMs);
+
+    const unsub = onAuthStateChanged(auth, (user) => {
+      clearTimeout(timeout);
+      unsub();
+      currentUid = user?.uid || null;
+      resolve(currentUid);
+    });
+  });
+}
+
+// Sign in anonymously to get a real Firebase UID
+export async function ensureAuth(): Promise<string | null> {
+  if (!auth) return null;
+  if (auth.currentUser) {
+    currentUid = auth.currentUser.uid;
+    localStorage.setItem('jarvis_uid', currentUid);
+    return currentUid;
+  }
+  try {
+    const cred = await signInAnonymously(auth);
+    currentUid = cred.user.uid;
+    localStorage.setItem('jarvis_uid', currentUid);
+    return currentUid;
+  } catch (e) {
+    console.error('[Firebase] Anonymous auth error:', e);
+    // Fall back to stored UID
+    const stored = localStorage.getItem('jarvis_uid');
+    if (stored) return stored;
+    // Generate a deterministic anonymous ID from the project
+    const fallbackUid = 'anon_' + (app?.options.projectId || 'jarvis') + '_' + Date.now();
+    localStorage.setItem('jarvis_uid', fallbackUid);
+    return fallbackUid;
+  }
+}
+
 function getUserId(): string | null {
-  return auth?.currentUser?.uid || localStorage.getItem('jarvis_uid') || 'anonymous';
+  return currentUid || auth?.currentUser?.uid || localStorage.getItem('jarvis_uid') || 'anonymous';
 }
 
 // ─── Diary ───

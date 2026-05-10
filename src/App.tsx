@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useAppStore } from '@/store/useAppStore';
 import { getSetting, setSetting } from '@/lib/db';
-import { initFirebase, isFirebaseReady } from '@/lib/firebase';
+import { initFirebase, isFirebaseReady, ensureAuth } from '@/lib/firebase';
 import { loadAllCaches } from '@/lib/memory';
 import Welcome from '@/sections/Welcome';
 import ApiKeySetup from '@/sections/ApiKeySetup';
@@ -16,7 +16,7 @@ function App() {
   const {
     screen, setScreen,
     setLang, setOrKey, setR2Url, setActiveModel,
-    setUserBirthday, setFbConfig, setFbInitialized,
+    setUserBirthday, setFbConfig, setFbInitialized, setCurrentUser,
     initialized, setInitialized, setMode,
   } = useAppStore();
 
@@ -40,10 +40,15 @@ function App() {
           // Auto-init Firebase on app start if config exists
           const ok = initFirebase(savedFb);
           if (ok && isFirebaseReady()) {
-            setFbInitialized(true);
-            setMode('advanced');
-            // Load data from Firestore
-            await loadAllCaches();
+            // Must authenticate FIRST to get the real UID before loading data
+            const uid = await ensureAuth();
+            if (uid) {
+              setCurrentUser({ uid, email: null });
+              setFbInitialized(true);
+              setMode('advanced');
+              // Now load data with the correct UID
+              await loadAllCaches();
+            }
           }
         }
         if (savedKey) {

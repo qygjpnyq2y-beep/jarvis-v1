@@ -3,7 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { Database, ArrowRight, SkipForward, Check, AlertCircle } from 'lucide-react';
 import { useAppStore } from '@/store/useAppStore';
 import { setSetting } from '@/lib/db';
-import { initFirebase, isFirebaseReady } from '@/lib/firebase';
+import { initFirebase, isFirebaseReady, ensureAuth } from '@/lib/firebase';
+import { loadAllCaches } from '@/lib/memory';
 
 export default function FirebaseSetup() {
   const { t } = useTranslation();
@@ -47,15 +48,22 @@ export default function FirebaseSetup() {
         return;
       }
 
+      // Authenticate to get REAL Firebase UID (critical for correct Firestore path)
+      const uid = await ensureAuth();
+      if (!uid) {
+        setError('Firebase auth failed. Cannot access Firestore data.');
+        setStatus('idle');
+        return;
+      }
+
       // Save to IndexedDB
       setFbConfig(cfg);
       await setSetting('fbConfig', cfg);
       setFbInitialized(true);
-
-      // Generate anonymous user ID if no auth
-      const uid = 'user_' + Math.random().toString(36).slice(2, 10);
-      localStorage.setItem('jarvis_uid', uid);
       setCurrentUser({ uid, email: null });
+
+      // Load all memory from Firestore with the REAL UID
+      await loadAllCaches();
 
       setStatus('success');
 
