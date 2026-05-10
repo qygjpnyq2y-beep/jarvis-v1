@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useAppStore } from '@/store/useAppStore';
-import { getSetting, setSetting } from '@/lib/db';
+import { db, getSetting, setSetting } from '@/lib/db';
 import { initFirebase, isFirebaseReady, ensureAuth } from '@/lib/firebase';
 import { loadAllCaches } from '@/lib/memory';
 import Welcome from '@/sections/Welcome';
@@ -48,6 +48,17 @@ function App() {
               setMode('advanced');
               // Now load data with the correct UID
               await loadAllCaches();
+              // Sync IndexedDB → store for reactive UI
+              const [d, p, m, ses] = await Promise.all([
+                db.diary.orderBy('ts').reverse().toArray(),
+                db.paintings.orderBy('ts').reverse().limit(50).toArray(),
+                db.media.orderBy('ts').reverse().limit(50).toArray(),
+                db.sessions.orderBy('ts').reverse().limit(20).toArray(),
+              ]);
+              useAppStore.getState().setDiary(d);
+              useAppStore.getState().setPaintings(p);
+              useAppStore.getState().setMedia(m);
+              useAppStore.getState().setSessions(ses);
             }
           }
         }

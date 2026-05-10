@@ -8,12 +8,16 @@ import {
 import { useAppStore } from '@/store/useAppStore';
 import { db } from '@/lib/db';
 import { isFirebaseReady, fbSaveDoc, fbDeleteDoc } from '@/lib/firebase';
-import { memCache, loadAllCaches } from '@/lib/memory';
+import { loadAllCaches } from '@/lib/memory';
 import type { DiaryEntry, Painting, MediaFile } from '@/types';
 
 export default function MemoryPanel() {
   const { t } = useTranslation();
-  const { showMemory, setShowMemory, r2Url } = useAppStore();
+  const {
+    showMemory, setShowMemory, setDiary, setPaintings, setMedia, setSessions,
+    diary, paintings, media, sessions,
+    r2Url,
+  } = useAppStore();
   const [tab, setTab] = useState('diary');
   const [diaryText, setDiaryText] = useState('');
   const [diaryDate, setDiaryDate] = useState(new Date().toISOString().split('T')[0]);
@@ -22,19 +26,55 @@ export default function MemoryPanel() {
   const [paintPage, setPaintPage] = useState(0);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState('');
-  const [, setForceUpdate] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   const PPP = 30;
 
-  // Load data when panel opens
+  // Load data from Firestore/IndexedDB → store when panel opens
   useEffect(() => {
     if (!showMemory) return;
-    loadAllCaches().then(() => setForceUpdate((v) => v + 1));
+    setLoading(true);
+    loadAllCaches()
+      .then(() => {
+        // Sync memCache to store so React re-renders
+        const s = useAppStore.getState();
+        // Read from IndexedDB (which was synced by loadAllCaches)
+        return Promise.all([
+          db.diary.orderBy('ts').reverse().toArray(),
+          db.paintings.orderBy('ts').reverse().limit(50).toArray(),
+          db.media.orderBy('ts').reverse().limit(50).toArray(),
+          db.sessions.orderBy('ts').reverse().limit(20).toArray(),
+        ]).then(([d, p, m, ses]) => {
+          s.setDiary(d);
+          s.setPaintings(p);
+          s.setMedia(m);
+          s.setSessions(ses);
+        });
+      })
+      .catch((e) => console.error('[MemoryPanel] Load error:', e))
+      .finally(() => setLoading(false));
   }, [showMemory]);
 
   const refresh = useCallback(() => {
-    loadAllCaches().then(() => setForceUpdate((v) => v + 1));
-  }, []);
+    setLoading(true);
+    loadAllCaches()
+      .then(() =>
+        Promise.all([
+          db.diary.orderBy('ts').reverse().toArray(),
+          db.paintings.orderBy('ts').reverse().limit(50).toArray(),
+          db.media.orderBy('ts').reverse().limit(50).toArray(),
+          db.sessions.orderBy('ts').reverse().limit(20).toArray(),
+        ])
+      )
+      .then(([d, p, m, ses]) => {
+        setDiary(d);
+        setPaintings(p);
+        setMedia(m);
+        setSessions(ses);
+      })
+      .catch((e) => console.error('[MemoryPanel] Refresh error:', e))
+      .finally(() => setLoading(false));
+  }, [setDiary, setPaintings, setMedia, setSessions]);
 
   // ─── Diary ───
   const addDiary = async () => {
@@ -45,21 +85,16 @@ export default function MemoryPanel() {
       text: diaryText.trim(),
       ts: Date.now(),
     };
-    // Save to IndexedDB
     await db.diary.put(entry);
-    // Save to Firebase if connected
     if (isFirebaseReady()) await fbSaveDoc('diary', entry.id, entry);
-    // Update cache
-    memCache.diary.unshift(entry);
+    setDiary([entry, ...diary]);
     setDiaryText('');
-    setForceUpdate((v) => v + 1);
   };
 
   const delDiary = async (id: string) => {
     await db.diary.delete(id);
     if (isFirebaseReady()) await fbDeleteDoc('diary', id);
-    memCache.diary = memCache.diary.filter((d) => d.id !== id);
-    setForceUpdate((v) => v + 1);
+    setDiary(diary.filter((d) => d.id !== id));
   };
 
   // ─── Paintings Upload ───
@@ -69,6 +104,7 @@ export default function MemoryPanel() {
     if (!imageFiles.length) return;
     setUploading(true);
     let done = 0;
+    const newEntries: Painting[] = [];
     for (const file of imageFiles) {
       setUploadProgress(`${done + 1}/${imageFiles.length} ${file.name}`);
       try {
@@ -88,7 +124,7 @@ export default function MemoryPanel() {
         };
         await db.paintings.put(entry);
         if (isFirebaseReady()) await fbSaveDoc('paintings', entry.id, entry);
-        memCache.paintings.unshift(entry);
+        newEntries.push(entry);
         done++;
       } catch (e) {
         console.error('Upload error:', e);
@@ -97,14 +133,15 @@ export default function MemoryPanel() {
     setUploading(false);
     setUploadProgress('');
     setPaintPage(0);
-    setForceUpdate((v) => v + 1);
+    if (newEntries.length > 0) {
+      setPaintings([...newEntries, ...paintings]);
+    }
   };
 
   const delPaint = async (id: string) => {
     await db.paintings.delete(id);
     if (isFirebaseReady()) await fbDeleteDoc('paintings', id);
-    memCache.paintings = memCache.paintings.filter((p) => p.id !== id);
-    setForceUpdate((v) => v + 1);
+    setPaintings(paintings.filter((p) => p.id !== id));
   };
 
   // ─── Media Upload ───
@@ -116,6 +153,7 @@ export default function MemoryPanel() {
     if (!mediaFiles.length) return;
     setUploading(true);
     let done = 0;
+    const newEntries: MediaFile[] = [];
     for (const file of mediaFiles) {
       setUploadProgress(`${done + 1}/${mediaFiles.length} ${file.name}`);
       try {
@@ -134,7 +172,7 @@ export default function MemoryPanel() {
         };
         await db.media.put(entry);
         if (isFirebaseReady()) await fbSaveDoc('media', entry.id, entry);
-        memCache.media.unshift(entry);
+        newEntries.push(entry);
         done++;
       } catch (e) {
         console.error('Media upload error:', e);
@@ -142,24 +180,25 @@ export default function MemoryPanel() {
     }
     setUploading(false);
     setUploadProgress('');
-    setForceUpdate((v) => v + 1);
+    if (newEntries.length > 0) {
+      setMedia([...newEntries, ...media]);
+    }
   };
 
   const delMedia = async (id: string) => {
     await db.media.delete(id);
     if (isFirebaseReady()) await fbDeleteDoc('media', id);
-    memCache.media = memCache.media.filter((m) => m.id !== id);
-    setForceUpdate((v) => v + 1);
+    setMedia(media.filter((m) => m.id !== id));
   };
 
   // ─── Filters ───
-  const filteredDiary = memCache.diary.filter((d) => {
+  const filteredDiary = diary.filter((d) => {
     if (!searchQ) return true;
     const q = searchQ.toLowerCase();
     return d.text.toLowerCase().includes(q) || d.date.includes(q);
   });
 
-  const filteredPaintings = memCache.paintings.filter((p) => {
+  const filteredPaintings = paintings.filter((p) => {
     if (!paintSearch) return true;
     const q = paintSearch.toLowerCase();
     const hay = [p.title, p.description].concat(p.tags || []).join(' ').toLowerCase();
@@ -203,7 +242,8 @@ export default function MemoryPanel() {
           <div className="flex items-center gap-2">
             <button
               onClick={refresh}
-              className="w-8 h-8 rounded-lg border border-white/10 bg-white/[0.03] flex items-center justify-center text-white/40 hover:text-blue-400 transition-colors"
+              disabled={loading}
+              className="w-8 h-8 rounded-lg border border-white/10 bg-white/[0.03] flex items-center justify-center text-white/40 hover:text-blue-400 transition-colors disabled:opacity-30"
               title="Refresh"
             >
               <Upload className="w-3.5 h-3.5" />
@@ -233,6 +273,16 @@ export default function MemoryPanel() {
             ))}
           </div>
         </div>
+
+        {/* Loading indicator */}
+        {loading && (
+          <div className="px-6 mb-2 flex-shrink-0">
+            <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-blue-500/10 border border-blue-500/20">
+              <div className="w-3 h-3 border-2 border-blue-400/30 border-t-blue-400 rounded-full animate-spin" />
+              <span className="text-blue-400 text-xs">Loading memory...</span>
+            </div>
+          </div>
+        )}
 
         {/* Upload progress */}
         {uploading && (
@@ -390,10 +440,10 @@ export default function MemoryPanel() {
                 onChange={(e) => handleMediaUpload(e.target.files)}
               />
               <p className="text-xs text-white/30">
-                {t('memory.media.count', { count: memCache.media.length })}
+                {t('memory.media.count', { count: media.length })}
               </p>
               <div className="space-y-2">
-                {memCache.media.map((m) => (
+                {media.map((m) => (
                   <div
                     key={m.id}
                     className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.03] border border-white/[0.08]"
@@ -404,7 +454,7 @@ export default function MemoryPanel() {
                     <div className="flex-1 min-w-0">
                       <p className="text-sm text-white/60 truncate">{m.title}</p>
                       <p className="text-[11px] text-white/30">
-                        {m.type} · {(m.size / 1024 / 1024).toFixed(1)} MB
+                        {m.type} &middot; {(m.size / 1024 / 1024).toFixed(1)} MB
                       </p>
                     </div>
                     <button
@@ -415,7 +465,7 @@ export default function MemoryPanel() {
                     </button>
                   </div>
                 ))}
-                {memCache.media.length === 0 && (
+                {media.length === 0 && (
                   <p className="text-sm text-white/20 text-center py-8">
                     {r2Url ? t('memory.media.drop') : t('memory.media.configure')}
                   </p>
@@ -428,10 +478,10 @@ export default function MemoryPanel() {
           {tab === 'chats' && (
             <div>
               <p className="text-xs text-white/30 mb-3">
-                {t('memory.chats.count', { count: memCache.sessions.length })}
+                {t('memory.chats.count', { count: sessions.length })}
               </p>
               <div className="space-y-2">
-                {memCache.sessions.map((s) => (
+                {sessions.map((s) => (
                   <div
                     key={s.id}
                     className="p-4 rounded-xl bg-white/[0.03] border border-white/[0.08] hover:border-blue-500/20 transition-colors"
@@ -455,24 +505,7 @@ export default function MemoryPanel() {
                 {t('memory.graph.title')}
               </h3>
               <p className="text-xs text-white/30 mb-4">{t('memory.graph.subtitle')}</p>
-              {memCache.semantic.length === 0 ? (
-                <p className="text-sm text-white/20 text-center py-8">{t('memory.graph.empty')}</p>
-              ) : (
-                <div className="space-y-2">
-                  {memCache.semantic.slice(0, 20).map((s) => (
-                    <div
-                      key={s.id}
-                      className="p-3 rounded-xl bg-white/[0.03] border border-white/[0.08] flex items-center justify-between"
-                    >
-                      <span className="text-xs text-white/50">
-                        <span className="text-blue-400/60 mr-2">[{s.type}]</span>
-                        {s.content}
-                      </span>
-                      <span className="text-[10px] text-white/20">{(s.confidence || 0).toFixed(1)}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
+              <p className="text-sm text-white/20 text-center py-8">{t('memory.graph.empty')}</p>
             </div>
           )}
 

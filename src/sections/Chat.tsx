@@ -9,7 +9,7 @@ import {
 import { useAppStore, PRESETS, MODELS } from '@/store/useAppStore';
 import { streamChat } from '@/lib/openrouter';
 import { db, setSetting } from '@/lib/db';
-import { loadAllCaches, memCache } from '@/lib/memory';
+import { loadAllCaches } from '@/lib/memory';
 import type { Message, Attachment } from '@/types';
 
 export default function Chat() {
@@ -186,10 +186,16 @@ export default function Chat() {
   const refreshMemory = async () => {
     try {
       await loadAllCaches();
-      setDiary(memCache.diary);
-      setPaintings(memCache.paintings);
-      setMedia(memCache.media);
-      setSessions(memCache.sessions);
+      const [d, p, m, ses] = await Promise.all([
+        db.diary.orderBy('ts').reverse().toArray(),
+        db.paintings.orderBy('ts').reverse().limit(50).toArray(),
+        db.media.orderBy('ts').reverse().limit(50).toArray(),
+        db.sessions.orderBy('ts').reverse().limit(20).toArray(),
+      ]);
+      setDiary(d);
+      setPaintings(p);
+      setMedia(m);
+      setSessions(ses);
     } catch (e) {
       console.error('Memory refresh error:', e);
     }

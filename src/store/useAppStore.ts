@@ -83,8 +83,8 @@ MEMORY: You have access to the user's diary, painting collection, music/video li
 ];
 
 export const MODELS: ModelInfo[] = [
-  { id: 'google/gemini-2.0-flash-exp:free', name: 'Gemini 2.0 Flash', desc: 'Free · Fast', provider: 'google' },
-  { id: 'anthropic/claude-3.5-sonnet', name: 'Claude 3.5 Sonnet', desc: '$3/M tokens', provider: 'anthropic' },
+  { id: 'google/gemini-3-flash-preview', name: 'Gemini 3 Flash', desc: 'Free · Fast', provider: 'google' },
+  { id: 'anthropic/claude-sonnet-4', name: 'Claude Sonnet 4', desc: '$3/M tokens', provider: 'anthropic' },
   { id: 'openai/gpt-4o-mini', name: 'GPT-4o Mini', desc: '$0.15/M tokens', provider: 'openai' },
   { id: 'deepseek/deepseek-chat', name: 'DeepSeek V3', desc: '$0.5/M tokens', provider: 'deepseek' },
   { id: 'meta-llama/llama-3.1-405b', name: 'Llama 3.1 405B', desc: 'Free · Powerful', provider: 'meta' },
