@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Send, Paperclip, Loader2, User, Bot,
-  Trash2, Settings, Brain, BarChart3,
+  RefreshCw, Settings, Brain, BarChart3,
   Image as ImageIcon, FileText, Music, Video,
   X, ChevronDown,
 } from 'lucide-react';
@@ -16,6 +16,7 @@ export default function Chat() {
   const {
     orKey, activeModel, activePreset, isCustom, customPrompt,
     setShowSettings, setShowMemory, setShowReport,
+    setDiary, setPaintings, setMedia, setSessions,
     lang,
   } = useAppStore();
 
@@ -27,7 +28,7 @@ export default function Chat() {
   const msgEndRef = useRef<HTMLDivElement>(null);
   const msgContainerRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [sessionId, setSessionId] = useState(() => `ses_${Date.now()}`);
+  const [sessionId] = useState(() => `ses_${Date.now()}`);
   const [streamingText, setStreamingText] = useState('');
 
   // Load messages from IndexedDB on mount
@@ -181,12 +182,21 @@ export default function Chat() {
     }
   };
 
-  const clearChat = () => {
-    setMessages([]);
-    setStreamingText('');
-    const newSid = `ses_${Date.now()}`;
-    setSessionId(newSid);
-    setSetting('lastSession', newSid);
+  const refreshMemory = async () => {
+    try {
+      const [d, p, m, s] = await Promise.all([
+        db.diary.orderBy('ts').reverse().toArray(),
+        db.paintings.orderBy('ts').reverse().limit(30).toArray(),
+        db.media.orderBy('ts').reverse().limit(30).toArray(),
+        db.sessions.orderBy('ts').reverse().limit(20).toArray(),
+      ]);
+      setDiary(d);
+      setPaintings(p);
+      setMedia(m);
+      setSessions(s);
+    } catch (e) {
+      console.error('Memory refresh error:', e);
+    }
   };
 
   const formatContent = (content: string) => {
@@ -238,11 +248,11 @@ export default function Chat() {
         </div>
         <div className="flex items-center gap-1.5">
           <button
-            onClick={clearChat}
+            onClick={refreshMemory}
             className="w-9 h-9 rounded-xl border border-white/10 bg-white/[0.03] flex items-center justify-center text-white/30 hover:text-blue-400 hover:border-blue-500/30 transition-all"
-            title={t('chat.clear')}
+            title="Refresh Memory"
           >
-            <Trash2 className="w-4 h-4" />
+            <RefreshCw className="w-4 h-4" />
           </button>
           <button
             onClick={() => setShowMemory(true)}

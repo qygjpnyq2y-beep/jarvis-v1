@@ -14,6 +14,7 @@ function App() {
   const {
     screen, setScreen,
     setLang, setOrKey, setR2Url, setActiveModel,
+    setUserBirthday, setFbConfig,
     initialized, setInitialized, setMode,
   } = useAppStore();
 
@@ -21,17 +22,21 @@ function App() {
   useEffect(() => {
     const restore = async () => {
       try {
-        const [savedKey, savedR2, savedModel, savedLang] = await Promise.all([
+        const [savedKey, savedR2, savedModel, savedLang, savedBirthday, savedFb] = await Promise.all([
           getSetting<string>('orKey', ''),
           getSetting<string>('r2Url', ''),
           getSetting<number>('activeModel', 0),
           getSetting<string>('lang', 'en'),
+          getSetting<string>('userBirthday', ''),
+          getSetting<Record<string, string> | null>('fbConfig', null),
         ]);
 
         if (savedLang) setLang(savedLang as 'en' | 'es' | 'ja' | 'ko' | 'de');
+        if (savedBirthday) setUserBirthday(savedBirthday);
+        if (savedFb) setFbConfig(savedFb);
         if (savedKey) {
           setOrKey(savedKey);
-          setMode('starter');
+          setMode(savedFb ? 'advanced' : 'starter');
           setScreen('app');
         }
         if (savedR2) setR2Url(savedR2);
