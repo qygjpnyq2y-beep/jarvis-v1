@@ -128,6 +128,15 @@ export interface NotifSettings {
   meal_recommendation: boolean;
 }
 
+export interface MealEntry {
+  id: string;
+  date: string;
+  mealType: string;
+  menu: string;
+  reason: string;
+  ts: number;
+}
+
 export interface AppState {
   lang: Lang;
   onboarding: OnboardingStep;

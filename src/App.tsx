@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import { useAppStore } from '@/store/useAppStore';
-import { db, getSetting, setSetting } from '@/lib/db';
-import { initFirebase, isFirebaseReady, ensureAuth } from '@/lib/firebase';
-import { loadAllCaches } from '@/lib/memory';
+import { getSetting, setSetting } from '@/lib/db';
+import { initFirebase, isFirebaseReady, ensureAuth, getFirebaseDb } from '@/lib/firebase';
+import { initMemorySystem, loadAllCaches } from '@/lib/memory';
 import Welcome from '@/sections/Welcome';
 import ApiKeySetup from '@/sections/ApiKeySetup';
 import FirebaseSetup from '@/sections/FirebaseSetup';
@@ -46,19 +46,13 @@ function App() {
               setCurrentUser({ uid, email: null });
               setFbInitialized(true);
               setMode('advanced');
-              // Now load data with the correct UID
-              await loadAllCaches();
-              // Sync IndexedDB → store for reactive UI
-              const [d, p, m, ses] = await Promise.all([
-                db.diary.orderBy('ts').reverse().toArray(),
-                db.paintings.orderBy('ts').reverse().limit(50).toArray(),
-                db.media.orderBy('ts').reverse().limit(50).toArray(),
-                db.sessions.orderBy('ts').reverse().limit(20).toArray(),
-              ]);
-              useAppStore.getState().setDiary(d);
-              useAppStore.getState().setPaintings(p);
-              useAppStore.getState().setMedia(m);
-              useAppStore.getState().setSessions(ses);
+              // Init memory system with real UID
+              const fdb = getFirebaseDb();
+              if (fdb) {
+                initMemorySystem(fdb, uid);
+                // Now load data with the correct UID (exactly like original initApp -> loadAllCaches)
+                await loadAllCaches();
+              }
             }
           }
         }

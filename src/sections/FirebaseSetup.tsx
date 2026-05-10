@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Database, ArrowRight, SkipForward, Check, AlertCircle } from 'lucide-react';
 import { useAppStore } from '@/store/useAppStore';
-import { db, setSetting } from '@/lib/db';
-import { initFirebase, isFirebaseReady, ensureAuth } from '@/lib/firebase';
-import { loadAllCaches } from '@/lib/memory';
+import { setSetting } from '@/lib/db';
+import { initFirebase, isFirebaseReady, ensureAuth, getFirebaseDb } from '@/lib/firebase';
+import { initMemorySystem, loadAllCaches } from '@/lib/memory';
 
 export default function FirebaseSetup() {
   const { t } = useTranslation();
@@ -62,20 +62,12 @@ export default function FirebaseSetup() {
       setFbInitialized(true);
       setCurrentUser({ uid, email: null });
 
-      // Load all memory from Firestore with the REAL UID
-      await loadAllCaches();
-      // Sync IndexedDB → store for reactive UI
-      const [d, p, m, ses] = await Promise.all([
-        db.diary.orderBy('ts').reverse().toArray(),
-        db.paintings.orderBy('ts').reverse().limit(50).toArray(),
-        db.media.orderBy('ts').reverse().limit(50).toArray(),
-        db.sessions.orderBy('ts').reverse().limit(20).toArray(),
-      ]);
-      const s = useAppStore.getState();
-      s.setDiary(d);
-      s.setPaintings(p);
-      s.setMedia(m);
-      s.setSessions(ses);
+      // Init memory system and load all caches
+      const fdb = getFirebaseDb();
+      if (fdb && uid) {
+        initMemorySystem(fdb, uid);
+        await loadAllCaches();
+      }
 
       setStatus('success');
 
